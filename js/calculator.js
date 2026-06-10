@@ -96,10 +96,10 @@
     }
 
     function recalc() {
-      const price = parseFloat((qs("#calc-price") as HTMLInputElement).value) || 0;
-      const tank = parseFloat((qs("#calc-tank") as HTMLInputElement).value) || 0;
-      const consumption = parseFloat((qs("#calc-consumption") as HTMLInputElement).value) || 0;
-      const mileage = parseFloat((qs("#calc-mileage") as HTMLInputElement).value) || 0;
+      const price = parseFloat(qs("#calc-price").value) || 0;
+      const tank = parseFloat(qs("#calc-tank").value) || 0;
+      const consumption = parseFloat(qs("#calc-consumption").value) || 0;
+      const mileage = parseFloat(qs("#calc-mileage").value) || 0;
 
       const l100 = toLitresPer100(consumption, consumptionUnit);
       const weeklyL = (l100 * mileage) / 100;
@@ -137,7 +137,7 @@
         btn.classList.add("active");
         fuelType = btn.dataset.fuel;
         const prices = { petrol: petrolPrice, diesel: dieselPrice, lpg: lpgPrice };
-        (qs("#calc-price") as HTMLInputElement).value = prices[fuelType].toFixed(3);
+        (qs("#calc-price")).value = prices[fuelType].toFixed(3);
         recalc();
       });
     });
@@ -147,7 +147,7 @@
         qsa("#unit-toggle button").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         consumptionUnit = btn.dataset.unit;
-        (qs("#calc-consumption") as HTMLInputElement).value =
+        (qs("#calc-consumption")).value =
           consumptionUnit === "mpg" ? (235 / 7).toFixed(1) : "7";
         recalc();
       });
