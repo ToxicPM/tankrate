@@ -157,7 +157,7 @@
      DARK MODE
      ============================================================ */
   function initDarkMode() {
-    qsa(".dark-toggle").forEach(btn => {
+    qsa(".dark-toggle").forEach((btn) => {
       btn.addEventListener("click", () => {
         const on = document.documentElement.classList.toggle("dark");
         localStorage.setItem("darkMode", String(on));
