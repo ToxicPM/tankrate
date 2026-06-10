@@ -58,7 +58,7 @@ In Supabase Dashboard → **Edge Functions → Settings → Secrets**, add:
 
 | Secret | Value | Description |
 |--------|-------|-------------|
-| `COLLECTAPI_KEY` | your_collectapi_key | Get from https://collectapi.com |
+| `OPENVAN_KEY` | your_openvan_key | Get from https://openvan.com |
 | `NEWSAPI_KEY` | your_newsapi_key | Get from https://newsapi.org |
 | `OPENWEATHER_KEY` | your_openweather_key | Get from https://openweathermap.org |
 | `SUPABASE_URL` | https://yourproject.supabase.co | Auto-set in most cases |
@@ -102,7 +102,7 @@ You'll need to sign up for these external APIs:
 
 | API | URL | Free Tier |
 |-----|-----|-----------|
-| Collectapi | https://collectapi.com | Limited free |
+| Collectapi | https://openvan.com | Limited free |
 | NewsAPI | https://newsapi.org/register | 100 requests/day |
 | OpenWeatherMap | https://openweathermap.org/api | 60 calls/min |
 | ExchangeRate-API | https://open.exchangerate-api.com/sign-up | Free (USD base) |
@@ -323,7 +323,7 @@ Check:
 
 ### Prices not updating
 - Manually trigger: `https://yourproject.supabase.co/functions/v1/prices?refresh=true`
-- Check CollectAPI key validity
+- Check OpenVan key validity
 - Check pg_cron schedule is active
 
 ### AdSense not loading

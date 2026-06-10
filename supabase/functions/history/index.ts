@@ -1,4 +1,3 @@
-import "jsr:@supabase/functions-js/edge-framework";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -64,7 +63,7 @@ Deno.serve(async (req: Request) => {
     const cutoffStr = cutoff.toISOString().slice(0, 10);
 
     const { data, error } = (await supabaseFetch(
-      `/rest/v1/price_history?select=recorded_date,price,currency&country_code=eq.${country}&fuel_type=eq.${fuel}&recorded_date=gte.${cutoffStr}&order=recorded_date.asc`
+      `/rest/v1/price_history?select=recorded_date,price,currency,fuel_type&country_code=eq.${country}&recorded_date=gte.${cutoffStr}&order=recorded_date.asc`
     )) as { data: HistoryRow[] | null; error: string | null };
 
     if (error || !data || data.length === 0) {
@@ -79,6 +78,7 @@ Deno.serve(async (req: Request) => {
         date: r.recorded_date,
         price: r.price,
         currency: r.currency,
+        fuel_type: r.fuel_type,
       }))
     );
   } catch (err) {

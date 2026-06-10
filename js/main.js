@@ -165,19 +165,51 @@
         btn.textContent = on ? "☀️" : "🌙";
       });
     });
+  });
+
+  /* ============================================================
+     MOBILE MENU
+     ============================================================ */
+  function initMobileMenu() {
+    const btn = qs("#hamburger-btn");
+    const close = qs("#mobile-nav-close");
+    const nav = qs("#mobile-nav");
+    if (!btn || !nav) return;
+    btn.addEventListener("click", () => {
+      nav.classList.add("open");
+      btn.setAttribute("aria-expanded", "true");
+    });
+    if (close) {
+      close.addEventListener("click", () => {
+        nav.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+      });
+    }
+    qsa(".mobile-nav a").forEach(a => {
+      a.addEventListener("click", () => {
+        nav.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+      });
+    });
   }
 
   /* ============================================================
-     UNIT TOGGLE
+     COUNTRY DROPDOWN (header button)
      ============================================================ */
-  function initUnitToggle() {
-    qsa(".unit-toggle").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const next = __unit === "litre" ? "gallon" : "litre";
-        localStorage.setItem("fuelUnit", next);
-        window.__unit = next;
-        location.reload();
-      });
+  function initCountryDropdown() {
+    const btn = qs("#header-country-btn");
+    const menu = qs("#country-menu");
+    if (!btn || !menu) return;
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = menu.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    document.addEventListener("click", () => {
+      menu.classList.remove("open");
+      btn.setAttribute("aria-expanded", "false");
+    });
+  }
     });
   }
 
@@ -216,7 +248,7 @@
       window.__geo = getSavedGeo();
       return saved;
     }
-    if (checkConsent() === "rejected") return "GB";
+    if (checkConsent() !== "accepted") return "GB";
     try {
       const res = await fetch("https://ipapi.co/json/");
       if (!res.ok) throw new Error();
@@ -247,6 +279,20 @@
   /* ============================================================
      RENDER HELPERS
      ============================================================ */
+  async function populateCountryDropdown(selectedCode) {
+    const sel = qs("#country-select");
+    if (!sel) return;
+    try {
+      const data = await fetch("https://openvan.camp/api/fuel/prices").then(r => r.json());
+      if (!data.success || !data.data) return;
+      const countries = Object.entries(data.data)
+        .map(([code, info]) => ({ code: code.toUpperCase(), name: info.country_name || code }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      sel.innerHTML = '<option value="">Change country</option>' +
+        countries.map(c => `<option value="${c.code}" ${c.code === selectedCode ? 'selected' : ''}>${c.code} — ${c.name}</option>`).join("");
+    } catch { /* silent */ }
+  }
+
   function renderCountryBanner(cc, countryName) {
     const flag = getFlagEmoji(cc);
     const banner = qs(".geo-banner");
@@ -263,6 +309,7 @@
         if (sel.value) switchCountry(sel.value);
       });
     }
+    populateCountryDropdown(cc);
   }
 
   function getFlagEmoji(cc) {
@@ -427,6 +474,7 @@
         apiFetch(`/functions/v1/news?country=${country}`),
         apiFetch(`/functions/v1/currency`)
       ]);
+      console.log("TankRate data loaded for", country);
 
       window.__pricesData = prices;
       window.__historyData = history;
@@ -438,7 +486,11 @@
       renderAll(prices, history, news, currency);
     } catch (err) {
       console.error("loadPageData:", err);
-      showError("main-content", `Could not load data. ${err.message}`, loadPageData);
+      const overlay = qs("#skeleton-overlay");
+      if (overlay) {
+        overlay.innerHTML = `<div class="error-state" style="padding:2rem"><span>⚠ Could not load data: ${err.message}</span><br><button onclick="location.reload()" class="btn btn-primary" style="margin-top:1rem">Retry</button></div>`;
+      }
+      hide("main-content");
     }
   }
 
@@ -459,9 +511,13 @@
 
     if (typeof renderChart === "function" && history) renderChart(history);
     if (typeof renderFAQ === "function") renderFAQ(name);
+    if (typeof renderBlog === "function") renderBlog();
 
+    const weatherWidget = qs("#weather-widget");
     if (checkConsent() === "accepted" && window.__geo?.latitude && window.__geo?.longitude) {
       loadWeather(window.__geo.latitude, window.__geo.longitude);
+    } else if (weatherWidget) {
+      weatherWidget.innerHTML = `<p class="text-muted" style="font-size:var(--text-sm)">🌍 Enable location in cookie settings to see local driving conditions.</p>`;
     }
 
     if (typeof initCalculator === "function" && prices.prices) {
@@ -549,12 +605,41 @@
   }
 
   /* ============================================================
+     BLOG RENDER
+     ============================================================ */
+  function renderBlog() {
+    const container = qs("#blog-grid");
+    if (!container) return;
+    const posts = window.__blogPosts || [];
+    if (posts.length === 0) {
+      container.innerHTML = `<p class="text-muted">No blog posts available.</p>`;
+      return;
+    }
+    container.innerHTML = posts.map((post) => `
+      <article class="blog-card">
+        <div class="news-placeholder-img" style="height:200px">📝</div>
+        <div class="blog-card-body">
+          <h3><a href="${post.url}">${post.title}</a></h3>
+          <p>${post.desc}</p>
+          <span class="text-muted" style="font-size:var(--text-xs)">${post.date}</span>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  /* ============================================================
      EXPORT FOR OTHER MODULES
      ============================================================ */
   window.FW = {
     SUPABASE_URL,
     SUPABASE_ANON_KEY,
     ADSENSE_CLIENT,
+    qs,
+    qsa,
+    setText,
+    setHtml,
+    show,
+    hide,
     checkConsent,
     loadAdSense,
     detectCountry,
@@ -575,9 +660,14 @@
     initConsent();
     initDarkMode();
     initUnitToggle();
+    initMobileMenu();
+    initCountryDropdown();
 
-    const country = window.__country || getSavedCountry() || "GB";
+    const country = getSavedCountry() || "GB";
     const geo = getSavedGeo();
+    if (geo?.country_code) {
+      window.__country = geo.country_code;
+    }
 
     show("skeleton-overlay");
     hide("main-content");

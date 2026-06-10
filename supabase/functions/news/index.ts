@@ -1,4 +1,3 @@
-import "jsr:@supabase/functions-js/edge-framework";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;

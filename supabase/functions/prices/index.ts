@@ -1,27 +1,28 @@
-import "jsr:@supabase/functions-js/edge-framework";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const COLLECTAPI_KEY = Deno.env.get("COLLECTAPI_KEY")!;
 
-interface FuelPrice {
-  country: string;
-  countrycode: string;
-  gasoline: number;
-  gasoline_e5?: number;
-  gasoline_e10?: number;
-  diesel: number;
-  lpg: number;
-}
-
-interface CountryStatsRow {
+interface FuelPriceEntry {
   country_code: string;
   country_name: string;
-  flag_emoji: string;
-  currency_code: string;
-  currency_symbol: string;
-  unit_default: string;
+  currency: string;
+  local_currency: string;
+  unit: string;
+  prices: {
+    gasoline: number | null;
+    diesel: number | null;
+    lpg: number | null;
+    e85: number | null;
+    premium: number | null;
+  };
+  price_changes: {
+    gasoline: number | null;
+    diesel: number | null;
+    lpg: number | null;
+    e85: number | null;
+    premium: number | null;
+  };
 }
 
 interface PricesCacheRow {
@@ -106,76 +107,31 @@ const COUNTRY_NAME_MAP: Record<string, string> = {
 };
 
 const FLAG_EMOJI_MAP: Record<string, string> = {
-  GB: "🇬🇧",
-  US: "🇺🇸",
-  DE: "🇩🇪",
-  FR: "🇫🇷",
-  IT: "🇮🇹",
-  ES: "🇪🇸",
-  NL: "🇳🇱",
-  BE: "🇧🇪",
-  AT: "🇦🇹",
-  CH: "🇨🇭",
-  PT: "🇵🇹",
-  IE: "🇮🇪",
-  SE: "🇸🇪",
-  NO: "🇳🇴",
-  DK: "🇩🇰",
-  FI: "🇫🇮",
-  PL: "🇵🇱",
-  CZ: "🇨🇿",
-  HU: "🇭🇺",
-  RO: "🇷🇴",
-  AU: "🇦🇺",
-  NZ: "🇳🇿",
-  CA: "🇨🇦",
-  MX: "🇲🇽",
-  BR: "🇧🇷",
-  AR: "🇦🇷",
-  ZA: "🇿🇦",
-  IN: "🇮🇳",
-  JP: "🇯🇵",
-  CN: "🇨🇳",
-  KR: "🇰🇷",
-  SG: "🇸🇬",
-  TR: "🇹🇷",
+  GB: "🇬🇧", US: "🇺🇸", DE: "🇩🇪", FR: "🇫🇷", IT: "🇮🇹", ES: "🇪🇸",
+  NL: "🇳🇱", BE: "🇧🇪", AT: "🇦🇹", CH: "🇨🇭", PT: "🇵🇹", IE: "🇮🇪",
+  SE: "🇸🇪", NO: "🇳🇴", DK: "🇩🇰", FI: "🇫🇮", PL: "🇵🇱", CZ: "🇨🇿",
+  HU: "🇭🇺", RO: "🇷🇴", AU: "🇦🇺", NZ: "🇳🇿", CA: "🇨🇦", ZA: "🇿🇦",
+  IN: "🇮🇳", JP: "🇯🇵", CN: "🇨🇳", KR: "🇰🇷", SG: "🇸🇬", TR: "🇹🇷",
 };
 
 const CURRENCY_MAP: Record<string, { code: string; symbol: string }> = {
-  GB: { code: "GBP", symbol: "£" },
-  US: { code: "USD", symbol: "$" },
-  DE: { code: "EUR", symbol: "€" },
-  FR: { code: "EUR", symbol: "€" },
-  IT: { code: "EUR", symbol: "€" },
-  ES: { code: "EUR", symbol: "€" },
-  NL: { code: "EUR", symbol: "€" },
-  BE: { code: "EUR", symbol: "€" },
-  AT: { code: "EUR", symbol: "€" },
-  CH: { code: "CHF", symbol: "Fr" },
-  PT: { code: "EUR", symbol: "€" },
-  IE: { code: "EUR", symbol: "€" },
-  SE: { code: "SEK", symbol: "kr" },
-  NO: { code: "NOK", symbol: "kr" },
-  DK: { code: "DKK", symbol: "kr" },
-  FI: { code: "EUR", symbol: "€" },
-  PL: { code: "PLN", symbol: "zł" },
-  CZ: { code: "CZK", symbol: "Kč" },
-  HU: { code: "HUF", symbol: "Ft" },
-  RO: { code: "RON", symbol: "lei" },
-  AU: { code: "AUD", symbol: "A$" },
-  NZ: { code: "NZD", symbol: "NZ$" },
-  CA: { code: "CAD", symbol: "C$" },
-  MX: { code: "MXN", symbol: "Mex$" },
-  BR: { code: "BRL", symbol: "R$" },
-  AR: { code: "ARS", symbol: "AR$" },
-  ZA: { code: "ZAR", symbol: "R" },
-  IN: { code: "INR", symbol: "₹" },
-  JP: { code: "JPY", symbol: "¥" },
-  CN: { code: "CNY", symbol: "¥" },
-  KR: { code: "KRW", symbol: "₩" },
-  SG: { code: "SGD", symbol: "S$" },
-  TR: { code: "TRY", symbol: "₺" },
-  AE: { code: "AED", symbol: "د.إ" },
+  GB: { code: "GBP", symbol: "£" }, US: { code: "USD", symbol: "$" },
+  DE: { code: "EUR", symbol: "€" }, FR: { code: "EUR", symbol: "€" },
+  IT: { code: "EUR", symbol: "€" }, ES: { code: "EUR", symbol: "€" },
+  NL: { code: "EUR", symbol: "€" }, BE: { code: "EUR", symbol: "€" },
+  AT: { code: "EUR", symbol: "€" }, CH: { code: "CHF", symbol: "Fr" },
+  PT: { code: "EUR", symbol: "€" }, IE: { code: "EUR", symbol: "€" },
+  SE: { code: "SEK", symbol: "kr" }, NO: { code: "NOK", symbol: "kr" },
+  DK: { code: "DKK", symbol: "kr" }, FI: { code: "EUR", symbol: "€" },
+  PL: { code: "PLN", symbol: "zł" }, CZ: { code: "CZK", symbol: "Kč" },
+  HU: { code: "HUF", symbol: "Ft" }, RO: { code: "RON", symbol: "lei" },
+  AU: { code: "AUD", symbol: "A$" }, NZ: { code: "NZD", symbol: "NZ$" },
+  CA: { code: "CAD", symbol: "C$" }, MX: { code: "MXN", symbol: "Mex$" },
+  BR: { code: "BRL", symbol: "R$" }, AR: { code: "ARS", symbol: "AR$" },
+  ZA: { code: "ZAR", symbol: "R" }, IN: { code: "INR", symbol: "₹" },
+  JP: { code: "JPY", symbol: "¥" }, CN: { code: "CNY", symbol: "¥" },
+  KR: { code: "KRW", symbol: "₩" }, SG: { code: "SGD", symbol: "S$" },
+  TR: { code: "TRY", symbol: "₺" }, AE: { code: "AED", symbol: "د.إ" },
 };
 
 function getFlag(code: string): string {
@@ -190,8 +146,10 @@ function getCountryName(code: string): string {
   return COUNTRY_NAME_MAP[code] || code;
 }
 
-function isoCodeToCountryCode(iso: string): string {
-  return iso.toUpperCase();
+function normalizeUnit(unit: string): string {
+  if (unit === "liter") return "litre";
+  if (unit === "gallon") return "gallon";
+  return unit;
 }
 
 async function supabaseFetch(
@@ -219,47 +177,39 @@ async function supabaseFetch(
 }
 
 async function getExchangeRates(): Promise<Record<string, number>> {
-  const { data: cacheRow, error } = (await supabaseFetch(
-    "/rest/v1/exchange_rates_cache?select=rates,updated_at&order=updated_at.desc&limit=1"
-  )) as {
-    data: { rates: Record<string, number>; updated_at: string }[] | null;
-    error: string | null;
-  };
-  if (cacheRow && !error && cacheRow.length > 0) {
-    const row = cacheRow[0];
-    const age = Date.now() - new Date(row.updated_at).getTime();
-    if (age < 24 * 60 * 60 * 1000) {
-      return row.rates;
-    }
-  }
   try {
-    const res = await fetch(
-      "https://open.exchangerate-api.com/v6/latest/USD"
-    );
-    if (!res.ok) throw new Error(`ExchangeRate API ${res.status}`);
+    const res = await fetch("https://openvan.camp/api/currency/rates");
+    if (!res.ok) throw new Error(`OpenVan currency ${res.status}`);
     const json = await res.json();
-    const rates = json.rates as Record<string, number>;
-    await supabaseFetch("/rest/v1/exchange_rates_cache", {
-      method: "POST",
-      body: JSON.stringify({ base: "USD", rates }),
-    });
-    return rates;
+    if (json.success && json.rates) {
+      const rates = json.rates as Record<string, number>;
+      await supabaseFetch("/rest/v1/exchange_rates_cache", {
+        method: "POST",
+        body: JSON.stringify({ base: "EUR", rates }),
+      });
+      return rates;
+    }
+    throw new Error("Invalid currency response");
   } catch {
-    if (cacheRow && cacheRow.length > 0) return cacheRow[0].rates;
+    const { data: cacheRow } = (await supabaseFetch(
+      "/rest/v1/exchange_rates_cache?select=rates,updated_at&order=updated_at.desc&limit=1"
+    )) as { data: { rates: Record<string, number>; updated_at: string }[] | null };
+    if (cacheRow && cacheRow.length > 0) {
+      const age = Date.now() - new Date(cacheRow[0].updated_at).getTime();
+      if (age < 24 * 60 * 60 * 1000) return cacheRow[0].rates;
+    }
     return {};
   }
 }
 
-async function fetchFromCollectAPI(): Promise<FuelPrice[]> {
-  const res = await fetch(
-    "https://api.collectapi.com/gasPrice/allCountries",
-    {
-      headers: { authorization: `apikey ${COLLECTAPI_KEY}` },
-    }
-  );
-  if (!res.ok) throw new Error(`CollectAPI ${res.status}`);
+async function fetchFromOpenVan(): Promise<Record<string, FuelPriceEntry>> {
+  const res = await fetch("https://openvan.camp/api/fuel/prices");
+  if (!res.ok) throw new Error(`OpenVan ${res.status}`);
   const json = await res.json();
-  return json.result ?? [];
+  if (!json.success || !json.data) {
+    throw new Error("Invalid OpenVan response");
+  }
+  return json.data as Record<string, FuelPriceEntry>;
 }
 
 async function getCachedPrices(
@@ -274,89 +224,128 @@ async function getCachedPrices(
   return data;
 }
 
-async function refreshPricesCache(): Promise<FuelPrice[]> {
-  const prices = await fetchFromCollectAPI();
+async function refreshPricesCache(): Promise<Record<string, FuelPriceEntry>> {
+  const allCountries = await fetchFromOpenVan();
   const rates = await getExchangeRates();
-  const usdRate = rates["USD"] ?? 1;
 
-  const rows: Record<
-    string,
-    {
-      country_code: string;
-      fuel_type: string;
-      price: number;
-      currency: string;
-      price_usd: number;
-      unit: string;
-      updated_at: string;
-    }
-  > = {};
+  const rows: Array<{
+    country_code: string;
+    fuel_type: string;
+    price: number;
+    currency: string;
+    price_usd: number;
+    unit: string;
+    updated_at: string;
+  }> = [];
 
-  for (const p of prices) {
-    const cc = isoCodeToCountryCode(p.countrycode);
-    const curr = getCurrency(cc);
-    const unit = cc === "US" ? "gallon" : "litre";
-    const multiplier = cc === "US" ? 3.78541 : 1;
+  for (const [cc, entry] of Object.entries(allCountries)) {
+    const countryCode = cc.toUpperCase();
+    const curr = getCurrency(countryCode);
+    const localCurrency = entry.local_currency || entry.currency || "EUR";
+    const unit = normalizeUnit(entry.unit || "liter");
 
-    const fuels: Array<{ key: string; val: number }> = [
-      { key: "petrol", val: p.gasoline },
-      { key: "diesel", val: p.diesel },
-      { key: "lpg", val: p.lpg },
+    const fuels: Array<{ key: string; val: number | null }> = [
+      { key: "petrol", val: entry.prices.gasoline },
+      { key: "diesel", val: entry.prices.diesel },
+      { key: "lpg", val: entry.prices.lpg },
     ];
-    if (p.gasoline_e10 != null) {
-      fuels.push({ key: "petrol_e10", val: p.gasoline_e10 });
+    if (entry.prices.e85 != null) {
+      fuels.push({ key: "e85", val: entry.prices.e85 });
+    }
+    if (entry.prices.premium != null) {
+      fuels.push({ key: "premium", val: entry.prices.premium });
     }
 
     for (const f of fuels) {
       if (f.val == null || isNaN(f.val)) continue;
-      const localPrice = Number((f.val * multiplier).toFixed(3));
-      const priceInUsd = Number(
-        (localPrice / (curr.code === "USD" ? 1 : rates[curr.code] ?? usdRate)).toFixed(3)
-      );
-      const rowKey = `${cc}:${f.key}`;
-      rows[rowKey] = {
-        country_code: cc,
+      const localPrice = Number(f.val.toFixed(3));
+      const rateToUsd = rates["USD"] ?? 1;
+      const rateFromLocal = rates[localCurrency] ?? 1;
+      const priceInUsd = Number((localPrice / rateFromLocal * rateToUsd).toFixed(3));
+      rows.push({
+        country_code: countryCode,
         fuel_type: f.key,
         price: localPrice,
-        currency: curr.code,
+        currency: localCurrency,
         price_usd: priceInUsd,
         unit,
         updated_at: new Date().toISOString(),
-      };
+      });
     }
   }
 
-  const insertRows = Object.values(rows);
-  if (insertRows.length > 0) {
+  if (rows.length > 0) {
     await supabaseFetch("/rest/v1/prices_cache", {
       method: "POST",
-      body: JSON.stringify(insertRows),
+      body: JSON.stringify(rows),
       headers: { Prefer: "resolution=merge-duplicates" },
     });
   }
 
-  return prices;
+  return allCountries;
 }
 
 async function buildPricePayload(
   countryCode: string
 ): Promise<PricePayload> {
   const cached = await getCachedPrices(countryCode);
-  let apiPrices: FuelPrice[] = [];
+  let apiData: Record<string, FuelPriceEntry> = {};
+  let apiEntry: FuelPriceEntry | undefined;
+
   if (!cached) {
-    apiPrices = await refreshPricesCache();
+    apiData = await refreshPricesCache();
+    apiEntry = apiData[countryCode];
+  } else {
+    const { data: freshData } = (await fetch("https://openvan.camp/api/fuel/prices")
+      .then(r => r.json())) as { success: boolean; data: Record<string, FuelPriceEntry> };
+    if (freshData && freshData.success) {
+      apiData = freshData.data;
+      apiEntry = apiData[countryCode];
+    }
   }
 
   const { data: cacheRows, error } = (await supabaseFetch(
     `/rest/v1/prices_cache?select=*&country_code=eq.${countryCode}`
   )) as { data: PricesCacheRow[] | null; error: string | null };
   if (error || !cacheRows || cacheRows.length === 0) {
+    if (apiEntry) {
+      const curr = getCurrency(countryCode);
+      const unit = normalizeUnit(apiEntry.unit || "liter");
+      const prices: Record<string, { price: number; price_usd: number; unit: string }> = {};
+      const weekChange: Record<string, number> = {};
+      const fuelMap: Record<string, { key: string; priceKey: string }> = [
+        { key: "petrol", priceKey: "gasoline" },
+        { key: "diesel", priceKey: "diesel" },
+        { key: "lpg", priceKey: "lpg" },
+      ];
+      for (const fm of fuelMap) {
+        const p = apiEntry.prices[fm.priceKey];
+        const c = apiEntry.price_changes[fm.priceKey];
+        if (p != null) {
+          prices[fm.key] = { price: Number(p.toFixed(3)), price_usd: 0, unit };
+        }
+        if (c != null) {
+          weekChange[fm.key] = Number(c.toFixed(1));
+        }
+      }
+      return {
+        country_code: countryCode,
+        country_name: apiEntry.country_name || getCountryName(countryCode),
+        flag: getFlag(countryCode),
+        currency: apiEntry.local_currency || curr.code,
+        symbol: curr.symbol,
+        updated_at: new Date().toISOString(),
+        prices,
+        week_change: weekChange,
+      };
+    }
     throw new Error("No price data available");
   }
 
-  const countryName = getCountryName(countryCode);
+  const countryName = apiEntry?.country_name || getCountryName(countryCode);
   const flag = getFlag(countryCode);
   const curr = getCurrency(countryCode);
+  const currency = apiEntry?.local_currency || curr.code;
   const latestUpdatedAt = cacheRows.reduce(
     (max, r) => (r.updated_at > max ? r.updated_at : max),
     cacheRows[0].updated_at
@@ -376,30 +365,16 @@ async function buildPricePayload(
     }
   }
 
-  if (apiPrices.length > 0) {
-    const target = apiPrices.find(
-      (p) => isoCodeToCountryCode(p.countrycode) === countryCode
-    );
-    if (target) {
-      const prevRow = await supabaseFetch(
-        `/rest/v1/price_history?select=fuel_type,price&country_code=eq.${countryCode}&recorded_date=lt.now()-7&order=recorded_date.desc&limit=3`
-      );
-      const prev = (prevRow.data as { fuel_type: string; price: number }[] | null) ?? [];
-      const prevMap = new Map(prev.map((p) => [p.fuel_type, p.price]));
-      if (target.gasoline != null && prevMap.has("petrol")) {
-        weekChange["petrol"] = Number(
-          (target.gasoline - prevMap.get("petrol")!).toFixed(1)
-        );
-      }
-      if (target.diesel != null && prevMap.has("diesel")) {
-        weekChange["diesel"] = Number(
-          (target.diesel - prevMap.get("diesel")!).toFixed(1)
-        );
-      }
-      if (target.lpg != null && prevMap.has("lpg")) {
-        weekChange["lpg"] = Number(
-          (target.lpg - prevMap.get("lpg")!).toFixed(1)
-        );
+  if (apiEntry) {
+    const changeMap: Record<string, string> = {
+      gasoline: "petrol",
+      diesel: "diesel",
+      lpg: "lpg",
+    };
+    for (const [apiKey, fuelKey] of Object.entries(changeMap)) {
+      const c = apiEntry.price_changes[apiKey as keyof typeof apiEntry.price_changes];
+      if (c != null) {
+        weekChange[fuelKey] = Number(c.toFixed(1));
       }
     }
   }
@@ -408,7 +383,7 @@ async function buildPricePayload(
     country_code: countryCode,
     country_name: countryName,
     flag,
-    currency: curr.code,
+    currency,
     symbol: curr.symbol,
     updated_at: latestUpdatedAt,
     prices,

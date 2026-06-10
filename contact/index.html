@@ -59,6 +59,7 @@
   <nav class="mobile-nav" id="mobile-nav">
     <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
     <a href="/">Home</a><a href="/blog/">Blog</a><a href="/petrol-prices/">Petrol</a>
+    <a href="/diesel-prices/">Diesel</a><a href="/lpg-prices/">LPG</a>
   </nav>
   <div class="cookie-banner" id="cookie-banner" role="dialog" aria-label="Cookie consent">
     <p>We use cookies to personalise fuel prices for your location and serve relevant ads. <a href="/privacy-policy/">Learn more</a></p>
@@ -81,7 +82,7 @@
     <div class="container" style="padding:2rem 1rem">
       <div class="contact-form" id="contact-form">
         <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:var(--text-2xl);font-weight:700;margin-bottom:1.5rem;text-align:center">Send Us a Message</h2>
-        <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <form action="mailto:hello@tankrate.com" method="POST" enctype="text/plain">
           <div class="form-group">
             <label for="name">Full Name</label>
             <input type="text" id="name" name="name" required placeholder="Your full name">
@@ -127,37 +128,5 @@
           <li><a href="/petrol-prices/">Petrol Prices</a></li>
           <li><a href="/diesel-prices/">Diesel Prices</a></li>
           <li><a href="/lpg-prices/">LPG Prices</a></li>
-          <li><a href="/calculator/">Calculator</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Legal</h3>
-        <ul>
-          <li><a href="/privacy-policy/">Privacy Policy</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/contact/">Contact</a></li>
-          <li><a href="#" data-cookie-settings>Cookie Settings</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Countries</h3>
-        <ul>
-          <li><a href="#" data-country="GB">🇬🇧 United Kingdom</a></li>
-          <li><a href="#" data-country="US">🇺🇸 United States</a></li>
-          <li><a href="#" data-country="DE">🇩🇪 Germany</a></li>
-          <li><a href="#" data-country="FR">🇫🇷 France</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">© 2026 TankRate | Powered by Collectapi, NewsAPI, ipapi.co</div>
-  </footer>
-
-  <script src="/js/main.js" defer></script>
-  <script>
-    document.addEventListener('click', function(e) {
-      const link = e.target.closest('[data-country]');
-      if (link) { e.preventDefault(); if (window.FW && window.FW.switchCountry) window.FW.switchCountry(link.dataset.country); }
-    });
-  </script>
-</body>
-</html>
+          <li><a href="/fuel-saving-tips/">Fuel Saving Tips</a></li>
+          <li><a href="/blog/">Blog</a></li>

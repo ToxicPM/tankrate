@@ -6,18 +6,20 @@
   "use strict";
 
   window.renderChart = function (historyData) {
-    const container = qs("#price-chart");
+    const container = document.getElementById("price-chart");
     if (!container) return;
 
-    const canvas = qs("#price-chart-canvas");
+    let canvas = document.getElementById("price-chart-canvas");
     if (!canvas) {
-      container.innerHTML = `<canvas id="price-chart-canvas"></canvas>`;
+      canvas = document.createElement("canvas");
+      canvas.id = "price-chart-canvas";
+      container.innerHTML = "";
+      container.appendChild(canvas);
     }
 
-    const ctx = (qs("#price-chart-canvas") as HTMLCanvasElement).getContext("2d");
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const labels = historyData.map((d: { date: string }) => d.date);
     const fuelKeys = ["petrol", "diesel", "lpg"];
     const colors = {
       petrol: "#1B7F8E",
@@ -27,8 +29,8 @@
 
     const datasets = fuelKeys.map((key) => {
       const points = historyData
-        .filter((d: Record<string, unknown>) => d.fuel_type === key)
-        .map((d: { date: string; price: number }) => ({ x: d.date, y: d.price }));
+        .filter((d) => d.fuel_type === key)
+        .map((d) => ({ x: d.date, y: d.price }));
       return {
         label: key.charAt(0).toUpperCase() + key.slice(1),
         data: points,
@@ -44,7 +46,7 @@
 
     if (window.__priceChart) window.__priceChart.destroy();
 
-    window.__priceChart = new Chart(ctx as CanvasRenderingContext2D, {
+    window.__priceChart = new Chart(ctx, {
       type: "line",
       data: { datasets },
       options: {
@@ -66,7 +68,7 @@
             titleFont: { family: "Barlow Condensed", size: 14 },
             bodyFont: { family: "Inter", size: 12 },
             callbacks: {
-              label: (ctx) => `${ctx.dataset.label}: ${(ctx.raw as { y: number }).y.toFixed(2)}`,
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.y.toFixed(2)}`,
             },
           },
         },
@@ -78,7 +80,7 @@
           },
           y: {
             ticks: {
-              callback: (v: number | string) => `${v}`,
+              callback: (v) => `${v}`,
               font: { size: 10 },
               color: "#718096",
             },
