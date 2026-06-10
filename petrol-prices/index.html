@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Petrol Prices Today — United Kingdom | TankRate</title>
+  <meta name="description" content="Live petrol prices in the United Kingdom. Updated every 6 hours with national averages and regional breakdown. Find the cheapest petrol near you.">
+  <link rel="canonical" href="https://tankrate.com/petrol-prices/">
+  <meta property="og:title" content="Petrol Prices Today — United Kingdom | TankRate">
+  <meta property="og:description" content="Live petrol prices in the United Kingdom. Updated every 6 hours.">
+  <meta property="og:url" content="https://tankrate.com/petrol-prices/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://lmfnrqmxocnpebmkbahb.supabase.co">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
+    window.__unit = localStorage.getItem('fuelUnit') || 'litre';
+    window.__consent = (function() {
+      try { const raw = localStorage.getItem('cookieConsent'); if (!raw) return null; const c = JSON.parse(raw); if (Date.now() > c.expiry) { localStorage.removeItem('cookieConsent'); return null; } return c.status; } catch { return null; }
+    })();
+  </script>
+  <link rel="stylesheet" href="/styles/main.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="/styles/main.css"></noscript>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://tankrate.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Petrol Prices", "item": "https://tankrate.com/petrol-prices/"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Why are petrol prices rising in the United Kingdom?", "acceptedAnswer": {"@type": "Answer", "text": "Petrol prices in the UK are influenced by global crude oil prices, exchange rates, fuel duty, VAT, and refining costs."}},
+      {"@type": "Question", "name": "Where is the cheapest petrol near me?", "acceptedAnswer": {"@type": "Answer", "text": "Supermarket forecourts and independent stations typically offer the lowest prices. Use our regional table to compare."}},
+      {"@type": "Question", "name": "What is the difference between E5 and E10 petrol?", "acceptedAnswer": {"@type": "Answer", "text": "E5 contains up to 5% bioethanol; E10 contains up to 10%. E10 has slightly lower energy content, reducing fuel economy by around 3-4%."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="header" role="banner">
+    <div class="container">
+      <a href="/" class="logo" aria-label="TankRate Home">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+        TankRate
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/petrol-prices/" class="active">Petrol</a>
+        <a href="/diesel-prices/">Diesel</a>
+        <a href="/lpg-prices/">LPG</a>
+        <a href="/calculator/">Calculator</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+      <div class="header-actions">
+        <div class="country-dropdown">
+          <button class="country-btn" id="header-country-btn" aria-haspopup="true">
+            <span id="header-flag">🇬🇧</span> <span id="header-country">United Kingdom</span> ▾
+          </button>
+          <div class="country-menu" id="country-menu" role="menu"></div>
+        </div>
+        <button class="icon-btn dark-toggle" aria-label="Toggle dark mode">🌙</button>
+        <button class="hamburger" id="hamburger-btn" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobile-nav">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
+    <a href="/">Home</a><a href="/petrol-prices/">Petrol</a><a href="/diesel-prices/">Diesel</a>
+    <a href="/lpg-prices/">LPG</a><a href="/calculator/">Calculator</a><a href="/blog/">Blog</a>
+  </nav>
+
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-label="Cookie consent">
+    <p>We use cookies to personalise fuel prices for your location and serve relevant ads. <a href="/privacy-policy/">Learn more</a></p>
+    <div class="cookie-buttons">
+      <button class="btn btn-accept">Accept All</button>
+      <button class="btn btn-reject">Reject Non-Essential</button>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <main id="main-content" style="display:none">
+    <div class="breadcrumbs"><a href="/">Home</a> / <span>Petrol Prices</span></div>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Petrol Prices Today — <span id="hero-country">United Kingdom</span></h1>
+        <p>Current national average and regional petrol price breakdown.</p>
+      </div>
+    </section>
+
+    <div class="main-grid container">
+      <div class="content">
+        <div class="geo-banner" id="geo-banner">
+          <span class="flag" id="geo-flag">🇬🇧</span>
+          <span class="geo-text" id="geo-text">Showing prices for United Kingdom</span>
+          <select id="country-select" aria-label="Change country"><option value="">Change country</option></select>
+        </div>
+
+        <!-- NATIONAL AVERAGE -->
+        <div class="stat-cards" id="stat-cards">
+          <div class="stat-card" style="grid-column:1/-1">
+            <div class="fuel-label petrol">NATIONAL AVERAGE PETROL</div>
+            <div class="price" id="national-petrol-price">—</div>
+            <div class="unit" id="national-petrol-unit">per litre</div>
+            <div class="change neutral" id="national-petrol-change">—</div>
+          </div>
+        </div>
+
+        <div class="ad-placeholder ad-leaderboard">Ad — 728×90</div>
+
+        <!-- 90-DAY CHART -->
+        <h2 class="section-title">90-Day Petrol Price History</h2>
+        <div class="chart-container" id="chart-container">
+          <canvas id="price-chart-canvas"></canvas>
+        </div>
+
+        <!-- REGIONAL TABLE -->
+        <h2 class="section-title">Regional Petrol Prices</h2>
+        <div class="data-table-wrap">
+          <table class="data-table" id="region-table">
+            <thead>
+              <tr>
+                <th data-sort="name">Region</th>
+                <th data-sort="petrol">Petrol</th>
+                <th>Cheapest</th>
+              </tr>
+            </thead>
+            <tbody id="region-table-body"><tr><td colspan="3" class="no-data">Loading…</td></tr></tbody>
+          </table>
+        </div>
+
+        <!-- BUYING TIPS -->
+        <h2 class="section-title">Tips for Finding Cheap Petrol</h2>
+        <div class="article-content">
+          <p>With petrol averaging <span class="price-highlight" id="tips-price">—</span> per litre in <span id="tips-country">the United Kingdom</span> this week, finding ways to reduce your fuel bill is more important than ever. Here are our top strategies:</p>
+          <ol>
+            <li><strong>Use supermarket fuel cards</strong> — Tesco, Sainsbury's, Asda and Morrisons typically offer 3-5p per litre cheaper than major brands.</li>
+            <li><strong>Fill up on a Monday or Tuesday</strong> — prices often rise towards the weekend.</li>
+            <li><strong>Use price comparison apps</strong> — apps like PetrolPrices and RAC Fuel Price Finder show real-time local prices.</li>
+            <li><strong>Avoid motorway services</strong> — fuel on motorways can be 10-15p per litre more expensive.</li>
+            <li><strong>Drive efficiently</strong> — smooth acceleration and maintaining 55-65 mph can improve fuel economy by up to 20%.</li>
+          </ol>
+          <p>Need to calculate your monthly petrol cost? Use our <a href="/calculator/">fuel cost calculator</a>.</p>
+        </div>
+
+        <!-- ABOUT BLOCK -->
+        <h2 class="section-title">About Petrol Prices in <span id="about-country">the United Kingdom</span></h2>
+        <div class="article-content">
+          <p>Petrol prices in the United Kingdom are among the highest in Europe due to fuel duty (currently 52.95p per litre) and VAT at 20%. The wholesale price of crude oil and the GBP/USD exchange rate are the primary drivers of retail price changes. Prices typically fall in winter when demand is lower, and rise during summer holiday periods.</p>
+        </div>
+
+        <!-- FAQ -->
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div id="faq-list"></div>
+
+        <!-- SIGNUP -->
+        <div class="signup-box">
+          <h3>Get petrol price alerts</h3>
+          <p id="signup-desc">Get notified when petrol prices change in the United Kingdom.</p>
+          <div id="signup-form-wrap">
+            <form class="signup-form" id="signup-form" novalidate>
+              <input type="email" id="signup-email" placeholder="your@email.com" required aria-label="Email address">
+              <div class="checkbox-group">
+                <label><input type="checkbox" class="fuel-checkbox" value="petrol" checked> Petrol</label>
+              </div>
+              <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+          </div>
+          <div class="signup-success" id="signup-success">✓ You're subscribed! Check your email to confirm.</div>
+        </div>
+
+        <div class="ad-placeholder ad-leaderboard">Ad — 728×90</div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="weather-widget" id="weather-widget"><div class="skeleton" style="height:120px"></div></div>
+        <div class="ad-placeholder ad-sidebar">Ad — 300×600</div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="skeleton-overlay" class="container" style="padding-top:2rem">
+    <div class="skeleton" style="height:60px;margin-bottom:1rem"></div>
+    <div class="skeleton skeleton-card" style="grid-column:1/-1"></div>
+    <div class="skeleton" style="height:90px;margin-bottom:1rem"></div>
+    <div class="skeleton skeleton-chart" style="margin-bottom:2rem"></div>
+    <div class="skeleton skeleton-table" style="margin-bottom:2rem"></div>
+  </div>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="logo" style="display:inline-flex;margin-bottom:0.5rem">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+          TankRate
+        </a>
+        <p style="font-size:var(--text-sm)">Live fuel prices, every 6 hours.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/petrol-prices/">Petrol Prices</a></li>
+          <li><a href="/diesel-prices/">Diesel Prices</a></li>
+          <li><a href="/lpg-prices/">LPG Prices</a></li>
+          <li><a href="/calculator/">Calculator</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="/privacy-policy/">Privacy Policy</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="#" data-cookie-settings>Cookie Settings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Countries</h3>
+        <ul>
+          <li><a href="#" data-country="GB">🇬🇧 United Kingdom</a></li>
+          <li><a href="#" data-country="US">🇺🇸 United States</a></li>
+          <li><a href="#" data-country="DE">🇩🇪 Germany</a></li>
+          <li><a href="#" data-country="FR">🇫🇷 France</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 TankRate | Powered by Collectapi, NewsAPI, ipapi.co</div>
+  </footer>
+
+  <script src="/js/main.js" defer></script>
+  <script src="/js/chart.js" defer></script>
+  <script>
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('[data-country]');
+      if (link) { e.preventDefault(); if (window.FW && window.FW.switchCountry) window.FW.switchCountry(link.dataset.country); }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Privacy Policy — TankRate</title>
+  <meta name="description" content="TankRate Privacy Policy — GDPR compliant. Learn how we handle data, cookies, and third-party services.">
+  <link rel="canonical" href="https://tankrate.com/privacy-policy/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
+    window.__unit = localStorage.getItem('fuelUnit') || 'litre';
+    window.__consent = (function() {
+      try { const raw = localStorage.getItem('cookieConsent'); if (!raw) return null; const c = JSON.parse(raw); if (Date.now() > c.expiry) { localStorage.removeItem('cookieConsent'); return null; } return c.status; } catch { return null; }
+    })();
+  </script>
+  <link rel="stylesheet" href="/styles/main.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="/styles/main.css"></noscript>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://tankrate.com/"},
+    {"@type":"ListItem","position":2,"name":"Privacy Policy","item":"https://tankrate.com/privacy-policy/"}
+  ]}
+  </script>
+</head>
+<body>
+  <header class="header" role="banner">
+    <div class="container">
+      <a href="/" class="logo" aria-label="TankRate Home">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+        TankRate
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/petrol-prices/">Petrol</a>
+        <a href="/diesel-prices/">Diesel</a>
+        <a href="/lpg-prices/">LPG</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+      <div class="header-actions">
+        <div class="country-dropdown">
+          <button class="country-btn" id="header-country-btn" aria-haspopup="true">
+            <span id="header-flag">🇬🇧</span> <span id="header-country">United Kingdom</span> ▾
+          </button>
+          <div class="country-menu" id="country-menu" role="menu"></div>
+        </div>
+        <button class="icon-btn dark-toggle" aria-label="Toggle dark mode">🌙</button>
+        <button class="hamburger" id="hamburger-btn" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-nav" id="mobile-nav">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
+    <a href="/">Home</a><a href="/blog/">Blog</a><a href="/contact/">Contact</a>
+  </nav>
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-label="Cookie consent">
+    <p>We use cookies to personalise fuel prices for your location and serve relevant ads. <a href="/privacy-policy/">Learn more</a></p>
+    <div class="cookie-buttons">
+      <button class="btn btn-accept">Accept All</button>
+      <button class="btn btn-reject">Reject Non-Essential</button>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <main id="main-content" style="display:none">
+    <div class="breadcrumbs"><a href="/">Home</a> / <span>Privacy Policy</span></div>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Privacy Policy</h1>
+        <p>Last updated: 10 June 2026</p>
+      </div>
+    </section>
+
+    <div class="container" style="padding:2rem 1rem;max-width:780px">
+      <div class="legal-content">
+        <h2>1. Introduction</h2>
+        <p>TankRate ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website tankrate.com (the "Site"). Please read this policy carefully. If you do not agree with the terms of this policy, please do not access the Site.</p>
+
+        <h2>2. Information We Collect</h2>
+        <h3>2.1 Automatically Collected Information</h3>
+        <p>When you visit our Site, we automatically collect certain information about your device, including your web browser, IP address, time zone, and cookies. We also collect information about how you interact with the Site, such as the pages you visit and the time spent on those pages.</p>
+
+        <h3>2.2 IP Geolocation (ipapi.co)</h3>
+        <p>We use <strong>ipapi.co</strong> to detect your country for showing relevant fuel prices. This service processes your IP address server-side via our Supabase Edge Functions — it is never called from your browser directly unless you have given consent. ipapi.co may process your IP address in accordance with their own privacy policy. We do not store your full IP address beyond the session.</p>
+
+        <h3>2.3 localStorage</h3>
+        <p>We use browser localStorage to store the following non-sensitive preferences only:</p>
+        <ul>
+          <li><strong>darkMode:</strong> "true" or "false" — your theme preference.</li>
+          <li><strong>fuelUnit:</strong> "litre" or "gallon" — your preferred display unit.</li>
+          <li><strong>userCountry:</strong> Your detected or selected country code (e.g. "GB").</li>
+          <li><strong>userGeo:</strong> A copy of the ipapi.co response (city, region, lat/lon) for weather widget display.</li>
+          <li><strong>cookieConsent:</strong> Your consent choice and expiry timestamp.</li>
+        </ul>
+        <p>No sensitive data (passwords, financial details, etc.) is ever stored in localStorage.</p>
+
+        <h2>3. Google AdSense & Third-Party Advertising</h2>
+        <p>We use <strong>Google AdSense</strong> to serve advertisements. Google uses cookies to serve ads based on your prior visits to our website or other websites. Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to our Site and/or other sites on the Internet.</p>
+        <p>You may opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google's Ads Settings</a>. We only load the AdSense script after you have given explicit consent via our cookie banner. If you reject cookies, AdSense is never loaded.</p>
+        <p>Google AdSense may use the following cookies and technologies:</p>
+        <ul>
+          <li>NID, IDE, ANID — advertising personalisation</li>
+          <li>DSID, FLC — DoubleClick ad serving</li>
+          <li>Other Google Ads cookies as listed in <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google's Advertising Technologies page</a></li>
+        </ul>
+
+        <h2>4. Supabase & Edge Functions</h2>
+        <p>Our backend is powered by <strong>Supabase</strong>. All API calls to external data providers (Collectapi, ExchangeRate-API, NewsAPI, OpenWeatherMap) are made server-side via Supabase Edge Functions. Your browser communicates only with our Supabase project, which acts as a secure proxy. API keys are stored as Supabase environment secrets and are never exposed to the browser.</p>
+
+        <h2>5. Email Subscriptions</h2>
+        <p>If you subscribe to fuel price alerts, we store your email address, country preference, and selected fuel types in our Supabase subscribers table. This data is used solely to send price change notifications. We do not share your email with third parties. You can unsubscribe at any time by contacting hello@tankrate.com.</p>
+
+        <h2>6. Cookie Consent</h2>
+        <p>We use a cookie consent banner that stores your preference for <strong>30 days</strong>. After 30 days, the consent expires and you will be asked again. You can change your preference at any time by clicking "Cookie Settings" in the footer, which clears your stored consent and re-shows the banner.</p>
+        <p>What consent controls:</p>
+        <ul>
+          <li><strong>Accepted:</strong> Google AdSense loaded, ipapi.co geolocation, weather widget, all localStorage preferences saved.</li>
+          <li><strong>Rejected:</strong> No AdSense, no weather widget, no ipapi.co geolocation. Site remains fully functional for prices, charts and calculator.</li>
+        </ul>
+
+        <h2>7. Data Security</h2>
+        <p>We implement appropriate technical and organisational security measures to protect your data. API keys and service credentials are stored securely in Supabase and are never transmitted to the browser. All data transmission uses HTTPS.</p>
+
+        <h2>8. Your Rights (GDPR)</h2>
+        <p>If you are located in the European Economic Area, you have the following rights:</p>
+        <ul>
+          <li>Right to access your personal data</li>
+          <li>Right to rectification of inaccurate data</li>
+          <li>Right to erasure ("right to be forgotten")</li>
+          <li>Right to restrict processing</li>
+          <li>Right to data portability</li>
+          <li>Right to object to processing</li>
+        </ul>
+        <p>To exercise any of these rights, contact us at hello@tankrate.com. We will respond within 30 days.</p>
+
+        <h2>9. Data Retention</h2>
+        <p>Subscriber email data is retained until you unsubscribe or request deletion. API cache data (prices, news, exchange rates) is refreshed on schedule and older records are archived in our price_history table. You may request deletion of your subscriber record at any time.</p>
+
+        <h2>10. Third-Party Links</h2>
+        <p>Our Site contains links to third-party websites, including news articles and external resources. We are not responsible for the privacy practices of these external sites. We encourage you to read their privacy policies.</p>
+
+        <h2>11. Children's Privacy</h2>
+        <p>Our Site is not directed to children under 13. We do not knowingly collect personal information from children under 13. If we learn that we have collected personal information from a child under 13, we will delete it immediately.</p>
+
+        <h2>12. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated "Last updated" date. We encourage you to review this policy periodically.</p>
+
+        <h2>13. Contact Us</h2>
+        <p>If you have questions about this Privacy Policy, please contact us:</p>
+        <ul>
+          <li>Email: hello@tankrate.com</li>
+          <li>Contact form: <a href="/contact/">/contact/</a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <div id="skeleton-overlay" class="container" style="padding-top:2rem">
+    <div class="skeleton" style="height:60px;margin-bottom:1rem"></div>
+    <div class="skeleton" style="height:600px"></div>
+  </div>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="logo" style="display:inline-flex;margin-bottom:0.5rem">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+          TankRate
+        </a>
+        <p style="font-size:var(--text-sm)">Live fuel prices, every 6 hours.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/petrol-prices/">Petrol Prices</a></li>
+          <li><a href="/diesel-prices/">Diesel Prices</a></li>
+          <li><a href="/lpg-prices/">LPG Prices</a></li>
+          <li><a href="/calculator/">Calculator</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="/privacy-policy/">Privacy Policy</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="#" data-cookie-settings>Cookie Settings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Countries</h3>
+        <ul>
+          <li><a href="#" data-country="GB">🇬🇧 United Kingdom</a></li>
+          <li><a href="#" data-country="US">🇺🇸 United States</a></li>
+          <li><a href="#" data-country="DE">🇩🇪 Germany</a></li>
+          <li><a href="#" data-country="FR">🇫🇷 France</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 TankRate | Powered by Collectapi, NewsAPI, ipapi.co</div>
+  </footer>
+
+  <script src="/js/main.js" defer></script>
+  <script>
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('[data-country]');
+      if (link) { e.preventDefault(); if (window.FW && window.FW.switchCountry) window.FW.switchCountry(link.dataset.country); }
+    });
+  </script>
+</body>
+</html>

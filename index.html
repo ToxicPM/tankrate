@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Live Petrol, Diesel &amp; LPG Prices — United Kingdom | TankRate</title>
+  <meta name="description" content="Live UK petrol, diesel and LPG prices updated every 6 hours. Track fuel price trends and find the cheapest fuel near you.">
+  <link rel="canonical" href="https://tankrate.com/">
+  <meta property="og:title" content="Live Petrol, Diesel &amp; LPG Prices — United Kingdom | TankRate">
+  <meta property="og:description" content="Live UK petrol, diesel and LPG prices updated every 6 hours.">
+  <meta property="og:url" content="https://tankrate.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://tankrate.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Live Petrol, Diesel &amp; LPG Prices — United Kingdom | TankRate">
+  <meta name="twitter:description" content="Live UK petrol, diesel and LPG prices updated every 6 hours.">
+  <link rel="alternate" hreflang="en-gb" href="https://tankrate.com/">
+  <link rel="alternate" hreflang="en" href="https://tankrate.com/">
+  <link rel="alternate" hreflang="x-default" href="https://tankrate.com/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://ipapi.co">
+  <link rel="preconnect" href="https://lmfnrqmxocnpebmkbahb.supabase.co">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    if (localStorage.getItem('darkMode') === 'true') document.documentElement.classList.add('dark');
+    window.__unit = localStorage.getItem('fuelUnit') || 'litre';
+    window.__consent = (function() {
+      try { const raw = localStorage.getItem('cookieConsent'); if (!raw) return null; const c = JSON.parse(raw); if (Date.now() > c.expiry) { localStorage.removeItem('cookieConsent'); return null; } return c.status; } catch { return null; }
+    })();
+  </script>
+  <link rel="stylesheet" href="/styles/main.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="/styles/main.css"></noscript>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "TankRate",
+    "url": "https://tankrate.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://tankrate.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Why are fuel prices rising in the United Kingdom?","acceptedAnswer":{"@type":"Answer","text":"Fuel prices in the UK are influenced by global crude oil prices, exchange rates, government taxation, refining costs, and seasonal demand. Geopolitical events and supply chain disruptions also play a significant role in price movements."}},
+    {"@type":"Question","name":"Where is the cheapest petrol near me?","acceptedAnswer":{"@type":"Answer","text":"Use the regional price table above to find the cheapest stations in your area. Supermarket forecourts and independent retailers typically offer the lowest prices."}},
+    {"@type":"Question","name":"What is the difference between E5 and E10 petrol?","acceptedAnswer":{"@type":"Answer","text":"E5 contains up to 5% bioethanol. E10 contains up to 10% and has slightly lower energy content, reducing fuel economy by around 3-4%."}},
+    {"@type":"Question","name":"Will diesel prices fall in 2026?","acceptedAnswer":{"@type":"Answer","text":"Diesel prices are harder to predict. As refineries adjust output and global diesel demand stabilises, modest price relief is possible. Monitor weekly trends using our price history chart."}},
+    {"@type":"Question","name":"Is LPG cheaper than petrol to run?","acceptedAnswer":{"@type":"Answer","text":"Yes, LPG is typically 40-50% cheaper per litre than petrol. Payback period for conversion is usually 3-6 years depending on annual mileage."}}
+  ]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://tankrate.com/"}
+  ]}
+  </script>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="container">
+      <a href="/" class="logo" aria-label="TankRate Home">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+        TankRate
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/petrol-prices/">Petrol</a>
+        <a href="/diesel-prices/">Diesel</a>
+        <a href="/lpg-prices/">LPG</a>
+        <a href="/calculator/">Calculator</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+      <div class="header-actions">
+        <div class="country-dropdown">
+          <button class="country-btn" id="header-country-btn" aria-haspopup="true" aria-expanded="false">
+            <span id="header-flag">🇬🇧</span> <span id="header-country">United Kingdom</span> ▾
+          </button>
+          <div class="country-menu" id="country-menu" role="menu"></div>
+        </div>
+        <button class="icon-btn dark-toggle dark-toggle-desktop" aria-label="Toggle dark mode">🌙</button>
+        <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">✕</button>
+    <a href="/">Home</a>
+    <a href="/petrol-prices/">Petrol Prices</a>
+    <a href="/diesel-prices/">Diesel Prices</a>
+    <a href="/lpg-prices/">LPG Prices</a>
+    <a href="/calculator/">Calculator</a>
+    <a href="/fuel-saving-tips/">Fuel Saving Tips</a>
+    <a href="/blog/">Blog</a>
+    <a href="/about/">About</a>
+    <a href="/contact/">Contact</a>
+  </nav>
+
+  <!-- COOKIE BANNER -->
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-label="Cookie consent">
+    <p>We use cookies to personalise fuel prices for your location, remember your preferences, and serve relevant ads via Google AdSense. Your consent is saved for 30 days. <a href="/privacy-policy/">Learn more</a></p>
+    <div class="cookie-buttons">
+      <button class="btn btn-accept">Accept All</button>
+      <button class="btn btn-reject">Reject Non-Essential</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content" style="display:none">
+    <div class="breadcrumbs"><a href="/">Home</a></div>
+
+    <!-- HERO -->
+    <section class="page-hero">
+      <div class="container">
+        <h1>Live Petrol, Diesel &amp; LPG Prices — <span id="hero-country">United Kingdom</span></h1>
+        <p>Up-to-date fuel prices from official sources, updated every 6 hours.</p>
+      </div>
+    </section>
+
+    <div class="main-grid container">
+      <div class="content">
+        <!-- GEO BANNER -->
+        <div class="geo-banner" id="geo-banner">
+          <span class="flag" id="geo-flag">🇬🇧</span>
+          <span class="geo-text" id="geo-text">Showing prices for United Kingdom</span>
+          <select id="country-select" aria-label="Change country"><option value="">Change country</option></select>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="stat-cards" id="stat-cards">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+
+        <!-- AD LEADERBOARD -->
+        <div class="ad-placeholder ad-leaderboard" id="ad-leaderboard-1">Ad — 728×90</div>
+
+        <!-- CHART -->
+        <h2 class="section-title">30-Day Price History</h2>
+        <div class="chart-container" id="chart-container">
+          <div class="skeleton skeleton-chart"></div>
+        </div>
+
+        <!-- REGIONAL TABLE -->
+        <h2 class="section-title">Regional Price Breakdown</h2>
+        <div class="data-table-wrap" id="region-table-wrap">
+          <table class="data-table" id="region-table">
+            <thead>
+              <tr>
+                <th data-sort="name">Region</th>
+                <th data-sort="petrol">Petrol</th>
+                <th data-sort="diesel">Diesel</th>
+                <th data-sort="lpg">LPG</th>
+                <th>Cheapest</th>
+              </tr>
+            </thead>
+            <tbody id="region-table-body">
+              <tr><td colspan="5"><div class="skeleton skeleton-table"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- FAQ -->
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div id="faq-list"></div>
+
+        <!-- NEWS -->
+        <h2 class="section-title">Latest Fuel News</h2>
+        <div id="news-grid">
+          <div class="skeleton skeleton-news"></div>
+          <div class="skeleton skeleton-news"></div>
+        </div>
+
+        <!-- EMAIL SIGNUP -->
+        <div class="signup-box" id="signup-box">
+          <h3>Get fuel price alerts</h3>
+          <p id="signup-desc">Get notified when fuel prices change in the United Kingdom.</p>
+          <div id="signup-form-wrap">
+            <form class="signup-form" id="signup-form" novalidate>
+              <input type="email" id="signup-email" placeholder="your@email.com" required aria-label="Email address">
+              <div class="checkbox-group">
+                <label><input type="checkbox" class="fuel-checkbox" value="petrol" checked> Petrol</label>
+                <label><input type="checkbox" class="fuel-checkbox" value="diesel" checked> Diesel</label>
+                <label><input type="checkbox" class="fuel-checkbox" value="lpg"> LPG</label>
+              </div>
+              <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+          </div>
+          <div class="signup-success" id="signup-success">✓ You're subscribed! Check your email to confirm.</div>
+        </div>
+
+        <!-- AD LEADERBOARD ABOVE FOOTER -->
+        <div class="ad-placeholder ad-leaderboard" id="ad-leaderboard-footer">Ad — 728×90</div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="weather-widget" id="weather-widget">
+          <div class="skeleton" style="height:120px"></div>
+        </div>
+        <div class="ad-placeholder ad-sidebar" id="ad-sidebar">Ad — 300×600</div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- SKELETON OVERLAY -->
+  <div id="skeleton-overlay" class="container" style="padding-top:2rem">
+    <div class="geo-banner"><div class="skeleton" style="height:40px;flex:1"></div></div>
+    <div class="stat-cards">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+    <div class="skeleton" style="height:90px;margin-bottom:1rem"></div>
+    <div class="skeleton skeleton-chart" style="margin-bottom:2rem"></div>
+    <div class="skeleton skeleton-table" style="margin-bottom:2rem"></div>
+    <div class="skeleton" style="height:40px;width:200px;margin-bottom:1rem"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem">
+      <div class="skeleton skeleton-news"></div>
+      <div class="skeleton skeleton-news"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="logo" style="display:inline-flex;margin-bottom:0.5rem">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+          TankRate
+        </a>
+        <p style="font-size:var(--text-sm)">Live fuel prices, every 6 hours.</p>
+        <p style="font-size:var(--text-xs);margin-top:0.5rem;color:rgba(255,255,255,0.5)">Data last updated: <span id="footer-updated">—</span></p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/petrol-prices/">Petrol Prices</a></li>
+          <li><a href="/diesel-prices/">Diesel Prices</a></li>
+          <li><a href="/lpg-prices/">LPG Prices</a></li>
+          <li><a href="/calculator/">Fuel Calculator</a></li>
+          <li><a href="/fuel-saving-tips/">Fuel Saving Tips</a></li>
+          <li><a href="/blog/">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/privacy-policy/">Privacy Policy</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="#" data-cookie-settings>Cookie Settings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Countries</h3>
+        <ul>
+          <li><a href="#" data-country="GB">🇬🇧 United Kingdom</a></li>
+          <li><a href="#" data-country="US">🇺🇸 United States</a></li>
+          <li><a href="#" data-country="DE">🇩🇪 Germany</a></li>
+          <li><a href="#" data-country="FR">🇫🇷 France</a></li>
+          <li><a href="#" data-country="AU">🇦🇺 Australia</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 TankRate | Powered by Collectapi, NewsAPI, ipapi.co
+    </div>
+  </footer>
+
+  <script src="/js/main.js" defer></script>
+  <script src="/js/chart.js" defer></script>
+  <script>
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('[data-country]');
+      if (link) {
+        e.preventDefault();
+        if (window.FW && window.FW.switchCountry) window.FW.switchCountry(link.dataset.country);
+      }
+    });
+  </script>
+</body>
+</html>

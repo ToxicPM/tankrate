@@ -1,0 +1,80 @@
+-- ============================================================
+-- TankRate EXTERNAL CRON SETUP
+--
+-- pgcron is NOT available on Supabase Free tier.
+-- Use an external cron service instead. We recommend:
+--
+--   Option A (free): https://cron-job.org
+--   Option B (free): https://cronitor.io (with monitoring)
+--   Option C (paid): https://easycron.com
+--
+-- Create 3 scheduled jobs pointing to your Edge Functions:
+--
+-- 1. REFRESH PRICES — every 6 hours
+--    URL: https://lmfnrqmxocnpebmkbahb.supabase.co/functions/v1/prices?refresh=true
+--    Method: GET
+--    Headers: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZm5ycW14b2NucGVibWtiYWhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTA5MjIzMSwiZXhwIjoyMDk2NjY4MjMxfQ.legzxe8utUsIx3ttPFUEZcZd4rN49zgPud_DUAVIVsU
+--
+-- 2. REFRESH NEWS — every 2 hours
+--    URL: https://lmfnrqmxocnpebmkbahb.supabase.co/functions/v1/news?refresh=true
+--    Method: GET
+--    Headers: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZm5ycW14b2NucGVibWtiYWhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTA5MjIzMSwiZXhwIjoyMDk2NjY4MjMxfQ.legzxe8utUsIx3ttPFUEZcZd4rN49zgPud_DUAVIVsU
+--
+-- 3. DAILY HISTORY SNAPSHOT — at midnight UTC
+--    This one runs inside Supabase as a one-off SQL (no cron needed):
+--
+--    INSERT INTO public.price_history (country_code, fuel_type, price, price_usd, currency, recorded_date)
+--    SELECT country_code, fuel_type, price, price_usd, currency, CURRENT_DATE
+--    FROM public.prices_cache
+--    ON CONFLICT (country_code, fuel_type, recorded_date) DO NOTHING;
+--
+--    You can run this manually daily, or set it up as an HTTP trigger
+--    in your external cron service:
+--    URL: https://lmfnrqmxocnpebmkbahb.supabase.co/functions/v1/snapshot-history
+--    (You'll need to create this Edge Function — see below)
+--
+-- ============================================================
+-- OPTIONAL: Create a snapshot Edge Function
+-- Save as: supabase/functions/snapshot-history/index.ts
+-- ============================================================
+--
+-- import "jsr:@supabase/functions-js/edge-framework";
+--
+-- const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+-- const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+-- const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+--
+-- Deno.serve(async (req: Request) => {
+--   if (req.method === "OPTIONS") {
+--     return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": "*" } });
+--   }
+--
+--   const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/snapshot_prices`, {
+--     headers: {
+--       apikey: SUPABASE_ANON_KEY,
+--       Authorization: `Bearer ${SERVICE_ROLE}`,
+--       "Content-Type": "application/json",
+--       Prefer: "return=minimal",
+--     },
+--   });
+--
+--   return new Response(JSON.stringify({ success: res.ok }), {
+--     status: res.ok ? 200 : 500,
+--     headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+--   });
+-- });
+--
+-- ============================================================
+-- OPTIONAL: Create the snapshot RPC function in Supabase SQL Editor
+-- ============================================================
+--
+-- create or replace function public.snapshot_prices()
+-- returns void
+-- language sql
+-- security definer
+-- as $$
+--   insert into public.price_history (country_code, fuel_type, price, price_usd, currency, recorded_date)
+--   select country_code, fuel_type, price, price_usd, currency, current_date
+--   from public.prices_cache
+--   on conflict (country_code, fuel_type, recorded_date) do nothing;
+-- $$;

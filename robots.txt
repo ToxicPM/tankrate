@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /functions/
+Disallow: /api/
+
+# Crawl delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://tankrate.com/sitemap.xml
