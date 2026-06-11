@@ -110,12 +110,24 @@
     qsa(".cookie-banner").forEach(b => b.classList.remove("visible"));
   }
 
+  function setupGA() {
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'ad_storage': 'granted',
+        'analytics_storage': 'granted'
+      });
+    }
+  }
+
   function initConsent() {
     const banner = qs(".cookie-banner");
     if (!banner) return;
     if (checkConsent() !== null) {
       hideBanner();
-      if (checkConsent() === "accepted") loadAdSense();
+      if (checkConsent() === "accepted") {
+        loadAdSense();
+        setupGA();
+      }
       return;
     }
     showBanner();
@@ -129,6 +141,7 @@
         }));
         hideBanner();
         loadAdSense();
+        setupGA();
       });
     }
     if (rejectBtn) {
